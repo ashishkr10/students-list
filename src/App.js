@@ -1,23 +1,51 @@
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import AddStudent from "./components/AddStudent";
+import ManageStudents from "./components/ManageStudents";
+import Login from "./components/Login";
+import { Navigate } from "react-router";
 
 function App() {
+  const ProtectedRoute = ({ children }) => {
+    if (!localStorage.getItem("id")) {
+      return <Navigate to="/login" replace />;
+    }
+    return children;
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Router>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Navbar>
+                  <AddStudent />
+                </Navbar>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/add"
+            element={
+              <Navbar>
+                <AddStudent />
+              </Navbar>
+            }
+          />
+          <Route
+            path="/manage"
+            element={
+              <Navbar>
+                <ManageStudents />
+              </Navbar>
+            }
+          />
+          <Route path="/login" element={<Login />} />
+        </Routes>
+      </Router>
     </div>
   );
 }
